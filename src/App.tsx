@@ -22,7 +22,7 @@ const Loading = () => (
 );
 
 // Protected route component
-function ProtectedRoute(props: { element: ReactElement, requiredRole?: string }) {
+function ProtectedRoute(props) {
   const element = props.element;
   const requiredRole = props.requiredRole || '';
   const { isAuthenticated, isLoading, hasPermission } = useAuth();
