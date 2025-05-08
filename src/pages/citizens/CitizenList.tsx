@@ -136,7 +136,7 @@ const CitizenList: React.FC = () => {
               <div className="flex justify-center mt-6">
                 <div className="flex space-x-1">
                   <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    onClick={() => setPage((p: number) => Math.max(1, p - 1))}
                     disabled={page === 1}
                     className={`px-3 py-1 rounded-md ${
                       page === 1 
@@ -162,7 +162,7 @@ const CitizenList: React.FC = () => {
                   ))}
                   
                   <button
-                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() => setPage((p: number) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                     className={`px-3 py-1 rounded-md ${
                       page === totalPages

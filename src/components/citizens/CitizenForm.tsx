@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
 import { Citizen, CitizenFormData } from '../../api/citizenService';
 
@@ -43,7 +43,11 @@ const CitizenForm: React.FC<CitizenFormProps> = ({ initialValues, onSubmit, isLo
       validationSchema={citizenValidationSchema}
       onSubmit={onSubmit}
     >
-      {({ isSubmitting, touched, errors }) => (
+      {({ isSubmitting, touched, errors }: { 
+        isSubmitting: boolean; 
+        touched: FormikTouched<CitizenFormData>; 
+        errors: FormikErrors<CitizenFormData>;
+      }) => (
         <Form className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

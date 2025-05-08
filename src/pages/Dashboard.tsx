@@ -1,14 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import MainLayout from '../layouts/MainLayout';
 import { useAuth } from '../contexts/AuthContext';
+import applicationService from '../api/applicationService';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   
+  // Fetch pending applications
+  const { data: pendingApplicationsData } = useQuery(
+    'pendingApplications',
+    () => applicationService.getPendingApplications(1, 5),
+    {
+      staleTime: 60000
+    }
+  );
+  
+  const pendingApplications = pendingApplicationsData?.data || [];
+  
   // These would typically come from an API
   const stats = [
-    { label: 'Pending Applications', value: 24, icon: 'document-clock', color: 'warning' },
+    { label: 'Pending Applications', value: pendingApplicationsData?.total || 0, icon: 'document-clock', color: 'warning' },
     { label: 'Licenses Issued', value: 156, icon: 'document-check', color: 'success' },
     { label: 'Transactions Today', value: 34, icon: 'credit-card', color: 'primary' },
     { label: 'Citizens Registered', value: 189, icon: 'user-group', color: 'secondary' },
@@ -34,6 +47,17 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case 'SUBMITTED':
+        return 'bg-blue-100 text-blue-800';
+      case 'UNDER_REVIEW':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <MainLayout>
       <div>
@@ -54,6 +78,59 @@ const Dashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Pending Applications</h3>
+                <Link to="/applications?filter=pending" className="text-primary text-sm hover:underline">
+                  View all
+                </Link>
+              </div>
+              
+              {pendingApplications.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 py-2 text-left">ID</th>
+                        <th className="px-3 py-2 text-left">Category</th>
+                        <th className="px-3 py-2 text-left">Type</th>
+                        <th className="px-3 py-2 text-left">Status</th>
+                        <th className="px-3 py-2 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {pendingApplications.map((app) => (
+                        <tr key={app.id} className="hover:bg-gray-50">
+                          <td className="px-3 py-2">{app.id.slice(0, 8)}...</td>
+                          <td className="px-3 py-2">{app.category}</td>
+                          <td className="px-3 py-2">
+                            {app.application_type === 'NEW' && 'New'}
+                            {app.application_type === 'RENEWAL' && 'Renewal'}
+                            {app.application_type === 'REPLACEMENT' && 'Replacement'}
+                          </td>
+                          <td className="px-3 py-2">
+                            <span className={`px-2 py-1 rounded-full text-xs ${getStatusClass(app.status)}`}>
+                              {app.status.replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2">
+                            <Link 
+                              to={`/applications/${app.id}`}
+                              className="text-primary hover:underline"
+                            >
+                              View
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-4">No pending applications</p>
+              )}
+            </div>
+            
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
               <div className="divide-y">
@@ -91,7 +168,7 @@ const Dashboard: React.FC = () => {
               <ul className="space-y-2">
                 <li className="flex items-center">
                   <span className="h-2 w-2 bg-warning rounded-full mr-2"></span>
-                  <span>Review 5 pending applications</span>
+                  <span>Review {pendingApplicationsData?.total || 0} pending applications</span>
                 </li>
                 <li className="flex items-center">
                   <span className="h-2 w-2 bg-primary rounded-full mr-2"></span>

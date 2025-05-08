@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, ReactElement } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Lazy loading of pages for better performance
@@ -11,6 +11,7 @@ const LicenseList = lazy(() => import('./pages/licenses/LicenseList'));
 const LicenseDetail = lazy(() => import('./pages/licenses/LicenseDetail'));
 const ApplicationList = lazy(() => import('./pages/applications/ApplicationList'));
 const ApplicationDetail = lazy(() => import('./pages/applications/ApplicationDetail'));
+const NewApplication = lazy(() => import('./pages/applications/NewApplication'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading component for suspense fallback
@@ -20,8 +21,14 @@ const Loading = () => (
   </div>
 );
 
+// Protected route component props
+interface ProtectedRouteProps {
+  element: ReactElement;
+  requiredRole?: string;
+}
+
 // Protected route component
-const ProtectedRoute = ({ element, requiredRole = '' }) => {
+const ProtectedRoute = ({ element, requiredRole = '' }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, hasPermission } = useAuth();
 
   if (isLoading) {
@@ -52,6 +59,7 @@ function AppRoutes() {
         <Route path="/licenses" element={<ProtectedRoute element={<LicenseList />} requiredRole="clerk" />} />
         <Route path="/licenses/:id" element={<ProtectedRoute element={<LicenseDetail />} requiredRole="clerk" />} />
         <Route path="/applications" element={<ProtectedRoute element={<ApplicationList />} requiredRole="clerk" />} />
+        <Route path="/applications/new" element={<ProtectedRoute element={<NewApplication />} requiredRole="clerk" />} />
         <Route path="/applications/:id" element={<ProtectedRoute element={<ApplicationDetail />} requiredRole="clerk" />} />
         
         {/* 404 page */}
