@@ -20,22 +20,22 @@ const Loading = () => (
 );
 
 function App() {
-  // This is just a placeholder. In a real app, you'd use a proper auth context
-  const isAuthenticated = false;
+  // TEMPORARY: Set isAuthenticated to true for development/testing
+  const isAuthenticated = true; // This bypasses the authentication check
 
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        {/* Protected routes */}
-        <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/citizens" element={isAuthenticated ? <CitizenList /> : <Navigate to="/login" />} />
-        <Route path="/citizens/:id" element={isAuthenticated ? <CitizenDetail /> : <Navigate to="/login" />} />
-        <Route path="/licenses" element={isAuthenticated ? <LicenseList /> : <Navigate to="/login" />} />
-        <Route path="/licenses/:id" element={isAuthenticated ? <LicenseDetail /> : <Navigate to="/login" />} />
-        <Route path="/applications" element={isAuthenticated ? <ApplicationList /> : <Navigate to="/login" />} />
-        <Route path="/applications/:id" element={isAuthenticated ? <ApplicationDetail /> : <Navigate to="/login" />} />
+        {/* Routes without authentication requirement for demo purposes */}
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/citizens" element={<CitizenList />} />
+        <Route path="/citizens/:id" element={<CitizenDetail />} />
+        <Route path="/licenses" element={<LicenseList />} />
+        <Route path="/licenses/:id" element={<LicenseDetail />} />
+        <Route path="/applications" element={<ApplicationList />} />
+        <Route path="/applications/:id" element={<ApplicationDetail />} />
         
         {/* 404 page */}
         <Route path="*" element={<NotFound />} />

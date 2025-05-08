@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
@@ -7,6 +7,12 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Auto-login for demo purposes
+  useEffect(() => {
+    localStorage.setItem('token', 'fake-token');
+    navigate('/');
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +45,7 @@ const Login: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-primary">AMPRO License System</h1>
           <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-green-500 mt-4">Automatically logging in for demo...</p>
         </div>
         
         {error && (
