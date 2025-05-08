@@ -21,15 +21,10 @@ const Loading = () => (
   </div>
 );
 
-// Protected route component props
-interface ProtectedRouteProps {
-  element: ReactElement;
-  requiredRole?: string;
-}
-
 // Protected route component
-const ProtectedRoute = (props: ProtectedRouteProps) => {
-  const { element, requiredRole = '' } = props;
+function ProtectedRoute(props: { element: ReactElement, requiredRole?: string }) {
+  const element = props.element;
+  const requiredRole = props.requiredRole || '';
   const { isAuthenticated, isLoading, hasPermission } = useAuth();
 
   if (isLoading) {
@@ -45,7 +40,7 @@ const ProtectedRoute = (props: ProtectedRouteProps) => {
   }
 
   return element;
-};
+}
 
 function AppRoutes() {
   return (
