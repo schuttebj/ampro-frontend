@@ -24,8 +24,12 @@ function Loading() {
 }
 
 // Protected route component
-function ProtectedRoute(props) {
-  // Avoid destructuring props
+interface ProtectedRouteProps {
+  element: React.ReactElement;
+  requiredRole?: string;
+}
+
+function ProtectedRoute({ element, requiredRole }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, hasPermission } = useAuth();
 
   if (isLoading) {
@@ -36,11 +40,11 @@ function ProtectedRoute(props) {
     return <Navigate to="/login" />;
   }
 
-  if (props.requiredRole && !hasPermission(props.requiredRole)) {
+  if (requiredRole && !hasPermission(requiredRole)) {
     return <Navigate to="/" />;
   }
 
-  return props.element;
+  return element;
 }
 
 function AppRoutes() {
