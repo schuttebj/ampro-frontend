@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import MainLayout from '../../layouts/MainLayout';
 import applicationService, { ApplicationFormData } from '../../api/applicationService';
-import citizenService from '../../api/citizenService';
+import citizenService, { Citizen } from '../../api/citizenService';
 
 // License categories
 const LICENSE_CATEGORIES = [
@@ -44,7 +44,7 @@ const NewApplication: React.FC = () => {
   const queryClient = useQueryClient();
   const [step, setStep] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedCitizen, setSelectedCitizen] = useState<any>(null);
+  const [selectedCitizen, setSelectedCitizen] = useState<Citizen | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   
   // Search for citizens
@@ -69,7 +69,7 @@ const NewApplication: React.FC = () => {
   );
   
   // Handle citizen selection
-  const handleSelectCitizen = (citizen: any) => {
+  const handleSelectCitizen = (citizen: Citizen) => {
     setSelectedCitizen(citizen);
     setSearchQuery('');
   };
@@ -100,7 +100,11 @@ const NewApplication: React.FC = () => {
   };
   
   // Handle form submission
-  const handleSubmit = (values: ApplicationFormData) => {
+  const handleSubmit = (values: ApplicationFormData, formikHelpers: FormikHelpers<ApplicationFormData>) => {
+    if (!selectedCitizen) {
+      return;
+    }
+    
     // Prepare final form data with selected citizen and files
     const formData: ApplicationFormData = {
       ...values,
@@ -200,7 +204,7 @@ const NewApplication: React.FC = () => {
                               </tr>
                             </thead>
                             <tbody className="divide-y">
-                              {searchResults.map((citizen) => (
+                              {searchResults.map((citizen: Citizen) => (
                                 <tr key={citizen.id}>
                                   <td className="px-4 py-2">{citizen.id_number}</td>
                                   <td className="px-4 py-2">{citizen.first_name} {citizen.last_name}</td>

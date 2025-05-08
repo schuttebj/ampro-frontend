@@ -28,7 +28,8 @@ interface ProtectedRouteProps {
 }
 
 // Protected route component
-const ProtectedRoute = ({ element, requiredRole = '' }: ProtectedRouteProps) => {
+const ProtectedRoute = (props: ProtectedRouteProps) => {
+  const { element, requiredRole = '' } = props;
   const { isAuthenticated, isLoading, hasPermission } = useAuth();
 
   if (isLoading) {
