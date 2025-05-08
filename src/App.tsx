@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Lazy loading of pages for better performance
 const Login = lazy(() => import('./pages/Login'));
@@ -19,28 +20,52 @@ const Loading = () => (
   </div>
 );
 
-function App() {
-  // TEMPORARY: Set isAuthenticated to true for development/testing
-  const isAuthenticated = true; // This bypasses the authentication check
+// Protected route component
+const ProtectedRoute = ({ element, requiredRole = '' }) => {
+  const { isAuthenticated, isLoading, hasPermission } = useAuth();
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (requiredRole && !hasPermission(requiredRole)) {
+    return <Navigate to="/" />;
+  }
+
+  return element;
+};
+
+function AppRoutes() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        {/* Routes without authentication requirement for demo purposes */}
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/citizens" element={<CitizenList />} />
-        <Route path="/citizens/:id" element={<CitizenDetail />} />
-        <Route path="/licenses" element={<LicenseList />} />
-        <Route path="/licenses/:id" element={<LicenseDetail />} />
-        <Route path="/applications" element={<ApplicationList />} />
-        <Route path="/applications/:id" element={<ApplicationDetail />} />
+        {/* Protected routes with role-based access control */}
+        <Route path="/" element={<ProtectedRoute element={<Dashboard />} />} />
+        <Route path="/citizens" element={<ProtectedRoute element={<CitizenList />} requiredRole="clerk" />} />
+        <Route path="/citizens/:id" element={<ProtectedRoute element={<CitizenDetail />} requiredRole="clerk" />} />
+        <Route path="/licenses" element={<ProtectedRoute element={<LicenseList />} requiredRole="clerk" />} />
+        <Route path="/licenses/:id" element={<ProtectedRoute element={<LicenseDetail />} requiredRole="clerk" />} />
+        <Route path="/applications" element={<ProtectedRoute element={<ApplicationList />} requiredRole="clerk" />} />
+        <Route path="/applications/:id" element={<ProtectedRoute element={<ApplicationDetail />} requiredRole="clerk" />} />
         
         {/* 404 page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 

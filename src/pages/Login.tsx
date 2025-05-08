@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Auto-login for demo purposes
-  useEffect(() => {
-    localStorage.setItem('token', 'fake-token');
-    navigate('/');
-  }, [navigate]);
+  // If already authenticated, redirect to dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,21 +21,12 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // In a real app, you would call your API here
-      // const response = await api.auth.login({ email, password });
-      
-      // For now, we'll just simulate a login
-      setTimeout(() => {
-        // Store the token in localStorage or a secure cookie
-        localStorage.setItem('token', 'fake-token');
-        
-        // Redirect to dashboard
-        navigate('/');
-        
-        setIsLoading(false);
-      }, 1000);
-    } catch (err) {
-      setError('Invalid email or password');
+      // Use the login function from AuthContext
+      await login(email, password);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -45,7 +37,6 @@ const Login: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-primary">AMPRO License System</h1>
           <p className="text-gray-600">Sign in to your account</p>
-          <p className="text-green-500 mt-4">Automatically logging in for demo...</p>
         </div>
         
         {error && (
@@ -82,9 +73,9 @@ const Login: React.FC = () => {
           <button
             type="submit"
             className="btn btn-primary w-full"
-            disabled={isLoading}
+            disabled={isLoading || authLoading}
           >
-            {isLoading ? (
+            {(isLoading || authLoading) ? (
               <span className="flex items-center justify-center">
                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
