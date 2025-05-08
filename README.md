@@ -1,142 +1,46 @@
-# AMPRO License System Frontend
+# Getting Started with Create React App
 
-This is the frontend application for the AMPRO License System, a driver's license processing system.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Prerequisites
+## Available Scripts
 
-- Node.js 14.x or later
-- npm 6.x or later
+In the project directory, you can run:
 
-## Installation
+### `npm start`
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd ampro-frontend
-```
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-2. Install dependencies:
-```bash
-npm install
-```
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-3. Create a `.env` file in the root directory with the following content:
-```
-REACT_APP_API_URL=https://ampro-licence.onrender.com
-```
+### `npm test`
 
-## Development
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-To start the development server:
+### `npm run build`
 
-```bash
-npm start
-```
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-This will run the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-## Building for Production
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-To build the app for production:
+### `npm run eject`
 
-```bash
-npm run build
-```
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-This will create an optimized production build in the `build` folder.
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-## Deployment Options
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-### Option 1: Self-hosted Server Deployment
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-1. Build the application:
-```bash
-npm run build
-```
+## Learn More
 
-2. Copy the contents of the `build` folder to your web server's document root or a specific directory configured to serve static content.
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-3. Configure your web server (Apache, Nginx, etc.) to serve the application and handle client-side routing. Below is an example Nginx configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /path/to/ampro-frontend/build;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-```
-
-### Option 2: Cloud Deployment (for PoC/Testing)
-
-#### Vercel Deployment
-
-1. Install Vercel CLI:
-```bash
-npm install -g vercel
-```
-
-2. Login to Vercel:
-```bash
-vercel login
-```
-
-3. Deploy the application:
-```bash
-vercel
-```
-
-#### Netlify Deployment
-
-1. Install Netlify CLI:
-```bash
-npm install -g netlify-cli
-```
-
-2. Login to Netlify:
-```bash
-netlify login
-```
-
-3. Deploy the application:
-```bash
-netlify deploy
-```
-
-#### Render Deployment
-
-1. Sign up for an account at [render.com](https://render.com)
-2. Create a new Web Service
-3. Connect to your GitHub repository
-4. Configure as a Static Site with the following settings:
-   - Build Command: `npm run build`
-   - Publish Directory: `build`
-
-## Environment Variables
-
-- `REACT_APP_API_URL`: URL of the backend API
-
-## Project Structure
-
-```
-src/
-├── api/          # API services
-├── assets/       # Static assets
-├── components/   # Reusable components
-├── contexts/     # React context providers
-├── hooks/        # Custom hooks
-├── layouts/      # Page layouts
-├── pages/        # Top-level pages
-├── types/        # TypeScript interfaces
-├── utils/        # Utility functions
-├── App.tsx       # Main application component
-└── index.tsx     # Entry point
-```
-
-## License
-
-[Your License Information] 
+To learn React, check out the [React documentation](https://reactjs.org/).
